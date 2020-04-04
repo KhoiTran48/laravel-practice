@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -36,4 +38,18 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public static function updateAvatar(Request $req)
+    {
+        if($req->hasFile("avatar")){
+            $user = auth()->user();
+
+            $fileName = $req->avatar->store("avatars", 'public');
+            Storage::disk('public')->delete($user->avatar);
+
+            $user->avatar = $fileName;
+            $user->save();
+        }
+    }
+
 }
