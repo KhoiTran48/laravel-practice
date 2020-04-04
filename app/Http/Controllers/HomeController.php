@@ -30,7 +30,7 @@ class HomeController extends Controller
     public function upload(Request $req)
     {
         User::updateAvatar($req);
-        return back();
+        return back()->with("status", "File uploaded!");
     }
 
 }
