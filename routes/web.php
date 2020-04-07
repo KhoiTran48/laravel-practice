@@ -1,5 +1,8 @@
 <?php
 
+use Carbon\Carbon;
+use App\Jobs\SendEmailJob;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -30,4 +33,13 @@ Route::get("/todo/edit/{id}", "TodoController@edit")->name("todo.edit");
 Route::post("/todo/update/{id}", "TodoController@update")->name("todo.update");
 
 Route::get("/todo/delete/{id}", "TodoController@destroy")->name("todo.delete");
+
+Route::get("sendEmail", function(){
+    //  Mail::to("trandinhkhoi48@gmail.com")->send(new SendEmailMailable());
+    SendEmailJob::dispatch()
+        ->delay(Carbon::now()->addSeconds(5));
+    // $job = (new SendEmailJob())->delay(Carbon::now()->addSeconds(10));
+    // dispatch($job);
+    echo "Email is sent properly";
+});
 
