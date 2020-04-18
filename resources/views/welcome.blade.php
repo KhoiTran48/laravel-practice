@@ -67,7 +67,7 @@
         <div class="flex-center position-ref full-height">
             @if (Route::has('login'))
                 <div class="top-right links">
-                    @auth
+                    @if(Auth::guard('web')->check())
                         <a href="{{ url('/home') }}">Home</a>
                     @else
                         <a href="{{ route('login') }}">Login</a>
@@ -75,7 +75,17 @@
                         @if (Route::has('register'))
                             <a href="{{ route('register') }}">Register</a>
                         @endif
-                    @endauth
+                    @endif
+
+                    @if(Auth::guard('admin')->check())
+                        <a href="{{ url('admin/home') }}">Admin Home</a>
+                    @else
+                        <a href="{{ route('admin.login') }}">Admin Login</a>
+
+                        @if (Route::has('admin.register'))
+                            <a href="{{ route('admin.register') }}">Admin Register</a>
+                        @endif
+                    @endif
                 </div>
             @endif
 

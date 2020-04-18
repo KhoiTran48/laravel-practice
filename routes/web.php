@@ -1,7 +1,11 @@
 <?php
 
+use App\Admin;
 use Carbon\Carbon;
 use App\Jobs\SendEmailJob;
+use App\Mail\SendEmailMailable;
+use Illuminate\Support\Facades\Mail;
+use App\Http\Services\TestServiceInterface;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,11 +39,35 @@ Route::post("/todo/update/{id}", "TodoController@update")->name("todo.update");
 Route::get("/todo/delete/{id}", "TodoController@destroy")->name("todo.delete");
 
 Route::get("sendEmail", function(){
-    //  Mail::to("trandinhkhoi48@gmail.com")->send(new SendEmailMailable());
-    SendEmailJob::dispatch()
-        ->delay(Carbon::now()->addSeconds(5));
+    Mail::to("trandinhkhoi48@gmail.com")->send(new SendEmailMailable());
+    // SendEmailJob::dispatch()
+    //     ->delay(Carbon::now()->addSeconds(5));
     // $job = (new SendEmailJob())->delay(Carbon::now()->addSeconds(10));
     // dispatch($job);
     echo "Email is sent properly";
 });
+
+Route::get("admins", function(){
+    $admins = Admin::all();
+    dd($admins);
+});
+
+Route::get("test", function(TestServiceInterface $test){
+    $test->doSomething(); 
+});
+
+Route::get("admin/home", "AdminController@index");
+
+Route::get("admin/login", "Admin\LoginController@showLoginForm")->name("admin.login");
+Route::post("admin/login", "Admin\LoginController@login");
+Route::post("admin/logout", "Admin\LoginController@logout")->name("admin.logout");
+
+Route::post("admin/password/email", "Admin\ForgotPasswordController@sendResetLinkEmail")->name("admin.password.email");
+Route::get("admin/password/reset", "Admin\ForgotPasswordController@showLinkRequestForm")->name("admin.password.request");
+
+Route::post("admin/password/reset", "Admin\ResetPasswordController@reset");
+Route::get("admin/password/reset/{token}", "Admin\ResetPasswordController@showResetForm")->name("admin.password.reset");
+
+Route::get("admin/register", "Admin\RegisterController@showRegistrationForm")->name("admin.register");
+Route::post("admin/register", "Admin\RegisterController@register");
 
