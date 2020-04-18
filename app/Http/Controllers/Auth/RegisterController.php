@@ -3,8 +3,14 @@
 namespace App\Http\Controllers\Auth;
 
 use App\User;
+use App\Mail\verifyEmail;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
@@ -63,10 +69,53 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'verify_token' => Str::random(40)
         ]);
+        Session::flash('status', "Registered! but verify your email to activate");
+        $this->sendEmail($user);
+        return $user;
     }
+
+    /**
+     * Handle a registration request for the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function register(Request $request)
+    {
+        $this->validator($request->all())->validate();
+
+        event(new Registered($user = $this->create($request->all())));
+
+        return redirect(route("login"));
+    }
+
+    public function sendEmail($user)
+    {
+        Mail::to($user["email"])->send(new verifyEmail($user));
+    }
+
+    public function verifyEmailFirst()
+    {
+        return view("email.verify_email_first");
+    }
+
+    public function sendEmailDone(Request $request, $email, $verifyToken)
+    {
+        $user = User::where(['email' => $email, 'verify_token' => $verifyToken])->first();
+        if($user){
+            User::where(['email' => $email, 'verify_token' => $verifyToken])->update(['verified' => 1, 'verify_token' => NULL]);
+            $this->guard()->login($user);
+            return $this->registered($request, $user)
+                        ?: redirect($this->redirectPath());
+        }else{
+            return "User not found";
+        }
+    }
+
 }

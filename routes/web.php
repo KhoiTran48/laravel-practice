@@ -56,6 +56,9 @@ Route::get("test", function(TestServiceInterface $test){
     $test->doSomething(); 
 });
 
+Route::get("verify_email_first", "Auth\RegisterController@verifyEmailFirst")->name("verify_email_first");
+Route::get("verify/{email}/{verifyToken}", "Auth\RegisterController@sendEmailDone")->name("send_email_done");
+
 Route::get("admin/home", "AdminController@index");
 Route::get("admin/editor", "EditorController@index");
 Route::get("admin/test", "EditorController@testMethod");
