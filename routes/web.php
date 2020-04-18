@@ -57,6 +57,8 @@ Route::get("test", function(TestServiceInterface $test){
 });
 
 Route::get("admin/home", "AdminController@index");
+Route::get("admin/editor", "EditorController@index");
+Route::get("admin/test", "EditorController@testMethod");
 
 Route::get("admin/login", "Admin\LoginController@showLoginForm")->name("admin.login");
 Route::post("admin/login", "Admin\LoginController@login");

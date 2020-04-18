@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
 {
@@ -56,5 +57,29 @@ class LoginController extends Controller
     protected function guard()
     {
         return Auth::guard("admin");
+    }
+
+    /**
+     * Send the response after the user was authenticated.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    protected function sendLoginResponse(Request $request)
+    {
+        $request->session()->regenerate();
+
+        $this->clearLoginAttempts($request);
+
+        foreach ($this->guard()->user()->role as $role) {
+            switch ($role->name) {
+                case 'admin':
+                    return redirect("admin/home");
+                case 'editor':
+                    return redirect("admin/editor"); 
+                default:
+                    return redirect()->intended($this->redirectPath());
+            }
+        }
     }
 }
