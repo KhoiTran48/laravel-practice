@@ -62,11 +62,11 @@ Route::get("admin/login", "Admin\LoginController@showLoginForm")->name("admin.lo
 Route::post("admin/login", "Admin\LoginController@login");
 Route::post("admin/logout", "Admin\LoginController@logout")->name("admin.logout");
 
-Route::post("admin/password/email", "Admin\ForgotPasswordController@sendResetLinkEmail")->name("admin.password.email");
 Route::get("admin/password/reset", "Admin\ForgotPasswordController@showLinkRequestForm")->name("admin.password.request");
+Route::post("admin/password/email", "Admin\ForgotPasswordController@sendResetLinkEmail")->name("admin.password.email");
 
-Route::post("admin/password/reset", "Admin\ResetPasswordController@reset");
 Route::get("admin/password/reset/{token}", "Admin\ResetPasswordController@showResetForm")->name("admin.password.reset");
+Route::post("admin/password/reset", "Admin\ResetPasswordController@reset")->name("admin.password.update");
 
 Route::get("admin/register", "Admin\RegisterController@showRegistrationForm")->name("admin.register");
 Route::post("admin/register", "Admin\RegisterController@register");
