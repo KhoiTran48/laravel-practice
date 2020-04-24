@@ -6,10 +6,10 @@ use Carbon\Carbon;
 use App\Events\TaskEvent;
 use App\Jobs\SendEmailJob;
 use App\Mail\SendEmailMailable;
+use Spatie\Permission\Models\Role;
 use App\Notifications\TaskCompleted;
 use Illuminate\Support\Facades\Mail;
-use App\Http\Services\TestServiceInterface;
-use App\Notifications\AdminResetPasswordNotification;
+use Spatie\Permission\Models\Permission;
 
 /*
 |--------------------------------------------------------------------------
@@ -99,7 +99,9 @@ Route::get("notify", function(){
     echo 'done';
 });
 
+use App\Http\Services\TestServiceInterface;
 use Stichoza\GoogleTranslate\GoogleTranslate;
+use App\Notifications\AdminResetPasswordNotification;
 
 Route::get("translate", function(){
     echo GoogleTranslate::trans('Hello again', 'vn', 'en');
@@ -113,3 +115,47 @@ Route::get("loading", function(){
         echo $adminRole->role->name;
     }
 });
+
+Route::get("create-role", function(){
+    Role::create(["name" => "writer"]);
+});
+
+Route::get("create-permission", function(){
+    Permission::create(["name" => "write post"]);
+});
+
+Route::get("give-permission", function(){
+    $role = Role::find(1);
+    $permission = Permission::find(1);
+    $role->givePermissionTo($permission);
+});
+
+Route::get("remove-permission", function(){
+    $role = Role::find(1);
+    $permission = Permission::find(1);
+    // $permission->removeRole($role);
+    $role->revokePermissionTo($permission);
+});
+
+Route::get("give-permission-user", function(){
+    auth()->user()->givePermissionTo("write post");
+});
+
+Route::get("assign-role-user", function(){
+    auth()->user()->assignRole("writer");
+});
+
+Route::get("user-get-permission", function(){
+    return auth()->user()->getAllPermissions();
+    // return auth()->user()->getDirectPermissions();
+    // return auth()->user()->getPermissionsViaRoles();
+});
+
+Route::get("user-get-role", function(){
+    return auth()->user()->roles;
+})->middleware("permission: edit post|write post");
+
+Route::get("get-user-base-on-role", function(){
+    return User::role("writer")->get();
+})->middleware("role:writers|writer");
+
