@@ -75,8 +75,8 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
             'verify_token' => Str::random(40)
         ]);
-        Session::flash('status', "Registered! but verify your email to activate");
-        $this->sendEmail($user);
+        // Session::flash('status', "Registered! but verify your email to activate");
+        // $this->sendEmail($user);
         return $user;
     }
 
