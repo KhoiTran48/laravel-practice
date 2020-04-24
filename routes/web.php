@@ -105,3 +105,11 @@ Route::get("translate", function(){
     echo GoogleTranslate::trans('Hello again', 'vn', 'en');
 });
 
+Route::get("loading", function(){
+    // $adminRoles = App\role_admin::with('role')->get();
+    $adminRoles = App\role_admin::all()->load('role');
+
+    foreach ($adminRoles as $adminRole) {
+        echo $adminRole->role->name;
+    }
+});
