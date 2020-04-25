@@ -24,7 +24,14 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        // auth()->user()->clearMediaCollection("avatar");
+        $avatars = auth()->user()->getMedia("avatar");
+        return view('home', compact("avatars"));
+    }
+
+    public function destroyMedia()
+    {
+        auth()->user()->clearMediaCollection("avatar");
     }
 
     public function upload(Request $req)
