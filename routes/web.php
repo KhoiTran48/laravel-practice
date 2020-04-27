@@ -159,3 +159,6 @@ Route::get("get-user-base-on-role", function(){
     return User::role("writer")->get();
 })->middleware("role:writers|writer");
 
+Route::get("/verifyOTP", "VerifyOTPController@showVerifyForm");
+Route::post("/verifyOTP", "VerifyOTPController@verify")->name("verifyOTP");
+

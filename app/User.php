@@ -2,14 +2,19 @@
 
 namespace App;
 
+use App\Mail\OTPMail;
+use App\Mail\verifyEmail;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\File;
 use App\Mail\SendEmailMailable;
 use App\Notifications\TaskCompleted;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cache;
 use Spatie\MediaLibrary\Models\Media;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Notifications\Notifiable;
+use App\Notifications\VerifyNotification;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
@@ -62,7 +67,7 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
 
     public function sendEmailVerificationNotification()
     {
-        $this->notify(new TaskCompleted);
+        $this->notify(new VerifyNotification($this));
     }
 
     public function registerMediaCollections()
@@ -92,6 +97,32 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
     public function getAvatarUrlAttribute()
     {
         return $this->avatar->getUrl();
+    }
+
+    public function OTP()
+    {
+        return Cache::get($this->OTPKey());
+    }
+
+    public function OTPKey()
+    {
+        return "OTP_for_{$this->id}";
+    }
+
+    public function cacheTheOTP()
+    {
+        $OTP = rand(100000, 999999);
+        Cache::put([$this->OTPKey() => $OTP], now()->addSeconds(20));
+        return $OTP;
+    }
+
+    public function sendOTP($via)
+    {
+        if($via == "via_sms"){
+
+        }else{
+            Mail::to($this->email)->send(new OTPMail($this->cacheTheOTP()));
+        }
     }
 
 }

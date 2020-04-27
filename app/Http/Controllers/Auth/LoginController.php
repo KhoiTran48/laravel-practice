@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Mail\OTPMail;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
@@ -26,7 +29,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/todo';
+    protected $redirectTo = '/home';
 
     /**
      * Create a new controller instance.
@@ -46,7 +49,41 @@ class LoginController extends Controller
      */
     protected function credentials(Request $request)
     {
-        return ['email' => $request->{$this->username()}, 'password' => $request->password, 'verified' => 1];
+        return ['email' => $request->{$this->username()}, 'password' => $request->password];
+    }
+
+    /**
+     * Attempt to log the user into the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return bool
+     */
+    protected function attemptLogin(Request $request)
+    {
+        $result = $this->guard()->attempt(
+            $this->credentials($request), $request->filled('remember')
+        );
+        if($result){
+            auth()->user()->sendOTP(request("otp_via"));
+        }
+        return $result;
+    }
+
+    /**
+     * Log the user out of the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function logout(Request $request)
+    {
+        auth()->user()->update(["verified" => 0]);
+
+        $this->guard()->logout();
+
+        $request->session()->invalidate();
+
+        return $this->loggedOut($request) ?: redirect('/');
     }
 
 }

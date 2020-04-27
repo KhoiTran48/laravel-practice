@@ -63,6 +63,7 @@ class ResetPasswordController extends Controller
      */
     public function broker()
     {
+        // admins is providers in config/auth.php
         return Password::broker("admins");
     }
 
@@ -73,6 +74,7 @@ class ResetPasswordController extends Controller
      */
     protected function guard()
     {
+        // admin is guard in config/auth.php
         return Auth::guard("admin");
     }
 

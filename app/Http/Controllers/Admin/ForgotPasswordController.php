@@ -48,6 +48,7 @@ class ForgotPasswordController extends Controller
      */
     public function broker()
     {
+        // admins is providers in config/auth.php
         return Password::broker("admins");
     }
 
