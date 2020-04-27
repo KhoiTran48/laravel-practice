@@ -91,7 +91,8 @@ class RegisterController extends Controller
         $this->validator($request->all())->validate();
 
         event(new Registered($user = $this->create($request->all())));
-
+        
+        Session::flash('status', "Registered! but verify your email to activate");
         return redirect(route("login"));
     }
 

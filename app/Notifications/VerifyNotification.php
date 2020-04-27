@@ -3,23 +3,22 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use App\Mail\SendEmailMailable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class TaskCompleted extends Notification implements ShouldQueue
+class VerifyNotification extends Notification
 {
     use Queueable;
-
+    public $user;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($user)
     {
-        //
+        $this->user = $user;
     }
 
     /**
@@ -39,14 +38,13 @@ class TaskCompleted extends Notification implements ShouldQueue
      * @param  mixed  $notifiable
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
-    public function toMail()
+    public function toMail($notifiable)
     {
         return (new MailMessage)
                     // ->line('The introduction to the notification.')
                     // ->action('Notification Action', url('/'))
                     // ->line('Thank you for using our application!');
-                    ->view("welcome");
-        // return (new SendEmailMailable)->to("aaa@gmail.com");
+                    ->view("email.send_email", ['user' => $this->user]);
     }
 
     /**
