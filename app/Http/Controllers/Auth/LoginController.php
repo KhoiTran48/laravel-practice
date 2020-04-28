@@ -63,7 +63,7 @@ class LoginController extends Controller
         $result = $this->guard()->attempt(
             $this->credentials($request), $request->filled('remember')
         );
-        if($result){
+        if(!auth()->user()->verified){
             auth()->user()->sendOTP(request("otp_via"));
         }
         return $result;
