@@ -18,6 +18,6 @@ class TwoFA
         if(auth()->user()->verified){
             return $next($request);
         }
-        return redirect("/verifyOTP");
+        return redirect("/verify_otp");
     }
 }

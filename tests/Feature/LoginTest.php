@@ -9,6 +9,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class LoginTest extends TestCase
 {
 
+    use RefreshDatabase;
+    
     /**
      * @test
     */
@@ -17,7 +19,7 @@ class LoginTest extends TestCase
     {
         $user = factory(User::class)->make();
         $this->actingAs($user);
-        $this->get('/home')->assertRedirect('/verifyOTP');
+        $this->get('/home')->assertRedirect('/verify_otp');
     }
 
     /**

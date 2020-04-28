@@ -33,4 +33,10 @@ class VerifyOTPController extends Controller
         return view("OTP.verify");
     }
 
+    public function resendOTP(Request $request)
+    {
+        auth()->user()->sendOTP(request("otp_via"));
+        return redirect("/verify_otp")->with("message", "Your OTP is sent, please check!");
+    }
+
 }
