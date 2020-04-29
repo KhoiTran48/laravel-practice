@@ -54,16 +54,14 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
 
     public static function updateAvatar(Request $req)
     {
-        if($req->hasFile("avatar")){
-            $user = auth()->user();
-            $user->addMedia($req->avatar)->toMediaCollection("avatar");
+        $user = auth()->user();
+        // $user->addMedia($req->avatar)->toMediaCollection("avatar");
 
-            // $fileName = $req->avatar->store("avatars", 'public');
-            // Storage::disk('public')->delete($user->avatar);
+        $fileName = $req->avatar->store("avatars", 'public');
+        Storage::disk('public')->delete($user->avatar);
 
-            // $user->avatar = $fileName;
-            // $user->save();
-        }
+        $user->avatar = $fileName;
+        $user->save();
     }
 
     public function sendEmailVerificationNotification()

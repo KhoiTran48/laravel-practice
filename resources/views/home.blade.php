@@ -22,7 +22,8 @@
                         @csrf
                         <input type="file" name="avatar"/>
                         <input type="submit" value="Upload">
-                    </div>
+                    </form>
+                    <upload-form :user="{{ auth()->user() }}"></upload-form>
                 </div>
             </div>
         </div>

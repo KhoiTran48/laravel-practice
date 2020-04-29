@@ -37,8 +37,19 @@ class HomeController extends Controller
 
     public function upload(Request $req)
     {
-        User::updateAvatar($req);
-        return back()->with("status", "File uploaded!");
+        if($req->hasFile("avatar")){
+            User::updateAvatar($req);
+            return back()->with("status", "File uploaded!");
+        }
+        return back()->with("error", "The image is required!");
+    }
+
+    public function uploadByVue(Request $req)
+    {
+        if($req->hasFile("avatar")){
+            User::updateAvatar($req);
+        }
+        return response(null, 201);
     }
 
 }
