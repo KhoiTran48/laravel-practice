@@ -24,6 +24,7 @@
         "vue-template-compiler": "^2.6.11"
     },
     "dependencies": {
+        "vue-avatar-editor": "^1.0.4",
         "vue-toasted": "^1.1.28"
     }
 }

@@ -64,6 +64,19 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
         $user->save();
     }
 
+    public static function updateAvatarByVue($base64Data)
+    {
+        list($type, $fileData) = explode(';', $base64Data);
+        list(, $fileData) = explode(',', $fileData); 
+        $imageName = 'avatars/' . str_random(10).'.'.'png';   
+        Storage::disk('public')->put($imageName, base64_decode($fileData));
+
+        $user = auth()->user();
+        Storage::disk('public')->delete($user->avatar);
+        $user->avatar = $imageName;
+        $user->save();
+    }
+
     public function sendEmailVerificationNotification()
     {
         $this->notify(new VerifyNotification($this));

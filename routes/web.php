@@ -33,7 +33,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::post("/upload", "HomeController@upload")->name("upload");
 
-Route::post("/upload_by_vue", "HomeController@uploadByVue")->name("upload");
+Route::post("/upload_by_vue", "HomeController@uploadByVue")->name("upload_by_vue");
 
 Route::get("/todo", "TodoController@index")->name("todo.list");
 

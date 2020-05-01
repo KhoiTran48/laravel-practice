@@ -46,8 +46,8 @@ class HomeController extends Controller
 
     public function uploadByVue(Request $req)
     {
-        if($req->hasFile("avatar")){
-            User::updateAvatar($req);
+        if(request("avatar")){
+            User::updateAvatarByVue(request("avatar"));
         }
         return response(null, 201);
     }
