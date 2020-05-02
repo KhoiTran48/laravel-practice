@@ -165,3 +165,9 @@ Route::get("/verify_otp", "VerifyOTPController@showVerifyForm");
 Route::post("/verify_otp", "VerifyOTPController@verify")->name("verify_otp");
 Route::post("/resend_otp", "VerifyOTPController@resendOTP")->name("resend_otp");
 
+Route::get("/chat", "ChatController@index");
+Route::post("/send", "ChatController@send");
+
+Route::post("/getOldMessage", "ChatController@getOldMessage");
+Route::post("/deleteSession", "ChatController@deleteSession");
+Route::post("/saveToSession", "ChatController@saveToSession");
